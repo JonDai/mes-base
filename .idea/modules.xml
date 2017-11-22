@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../../java/lintcode/lintcode.iml" filepath="$PROJECT_DIR$/../../java/lintcode/lintcode.iml" />
       <module fileurl="file://$PROJECT_DIR$/mes-base.iml" filepath="$PROJECT_DIR$/mes-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mes-mcs-tools/mes-mcs-tools.iml" filepath="$PROJECT_DIR$/mes-mcs-tools/mes-mcs-tools.iml" />
     </modules>
   </component>
 </project>
