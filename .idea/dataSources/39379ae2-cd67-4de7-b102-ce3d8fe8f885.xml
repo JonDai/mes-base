@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="ccpd@localhost">
+  <database-model serializer="dbm" rdbms="MYSQL" format-version="4.0">
+    <root id="1"/>
+    <schema id="2" parent="1" name="ccpd">
+      <Current>1</Current>
+      <Visible>1</Visible>
+    </schema>
+    <schema id="3" parent="1" name="b3log_symphony"/>
+    <schema id="4" parent="1" name="compete"/>
+    <schema id="5" parent="1" name="demo_database"/>
+    <schema id="6" parent="1" name="dwsurvey"/>
+    <schema id="7" parent="1" name="guns"/>
+    <schema id="8" parent="1" name="information_schema"/>
+    <schema id="9" parent="1" name="jeecms"/>
+    <schema id="10" parent="1" name="jsaas_ent"/>
+    <schema id="11" parent="1" name="mysql"/>
+    <schema id="12" parent="1" name="performance_schema"/>
+    <schema id="13" parent="1" name="springboot"/>
+    <schema id="14" parent="1" name="sys"/>
+    <schema id="15" parent="1" name="test"/>
+    <schema id="16" parent="1" name="world"/>
+    <schema id="17" parent="1" name="xxpay"/>
+    <schema id="18" parent="1" name="zheng"/>
+    <table id="19" parent="2" name="request_message"/>
+    <table id="20" parent="2" name="response_message"/>
+    <column id="21" parent="19" name="transcationid">
+      <Position>1</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="22" parent="19" name="messagename">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="23" parent="19" name="orgname">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="24" parent="19" name="orgrrn">
+      <Position>4</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="25" parent="19" name="username">
+      <Position>5</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <key id="26" parent="19" name="PRIMARY">
+      <ColNames>transcationid</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="27" parent="20" name="transcationid">
+      <Position>1</Position>
+      <DataType>varchar(255)|0</DataType>
+      <NotNull>1</NotNull>
+    </column>
+    <column id="28" parent="20" name="result">
+      <Position>2</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="29" parent="20" name="resultcode">
+      <Position>3</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <column id="30" parent="20" name="resultmessage">
+      <Position>4</Position>
+      <DataType>varchar(255)|0</DataType>
+    </column>
+    <key id="31" parent="20" name="PRIMARY">
+      <ColNames>transcationid</ColNames>
+      <Primary>1</Primary>
+    </key>
+  </database-model>
+</dataSource>

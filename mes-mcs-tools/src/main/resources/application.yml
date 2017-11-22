@@ -1,0 +1,16 @@
+#spring data 配置
+  spring:
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/ccpd
+      username: root
+      password: dpw123
+      driver-class-name: com.mysql.jdbc.Driver
+    jpa:
+      show-sql: false
+      hibernate:
+        ddl-auto: update
+
+
+#日志配置
+  logging:
+    level: debug
