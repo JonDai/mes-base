@@ -9,7 +9,6 @@
         <module name="lintcode" />
         <module name="mes-base" />
         <module name="mes-mcs-log" />
-        <module name="mes-mcs-tools" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
