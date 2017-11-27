@@ -1,4 +1,4 @@
-#spring data 配置
+#spring 配置
   spring:
     datasource:
       url: jdbc:mysql://127.0.0.1:3306/ccpd
@@ -9,8 +9,10 @@
       show-sql: false
       hibernate:
         ddl-auto: update
-
+    thymeleaf:
+      cache: false
 
 #日志配置
   logging:
     level: debug
+

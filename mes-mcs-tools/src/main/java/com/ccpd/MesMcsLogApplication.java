@@ -10,4 +10,6 @@ public class MesMcsLogApplication {
 		SpringApplication.run(MesMcsLogApplication.class, args);
 
 	}
+
+
 }
