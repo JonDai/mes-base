@@ -13,11 +13,14 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
@@ -38,7 +41,8 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
     @PersistenceContext
     EntityManager entityManager;
 
-
+    @Value("${sys.file.path}")
+    private String basePath;
     /**
      * 描述 根据excel文件路径解析并保存数据
      * @param path
@@ -47,6 +51,11 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
      */
     public void readAndSaveUserAttendanceFile(String path) throws Exception {
         Workbook workbook = super.read(path);
+        process(workbook);
+    }
+
+    public void readAndSaveUserAttendanceFile(InputStream inputStream) throws Exception {
+        Workbook workbook = super.read(inputStream,false);
         process(workbook);
     }
 
@@ -316,8 +325,15 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
 
         Sheet sheet = workbook.getSheetAt(0);
 
+        //校验表头数据是否符合合适
+        Row row0 = sheet.getRow(0);
+
+        if(!"部门".equals(row0.getCell(11).getStringCellValue().trim())){
+            throw new Exception("第11列应该是部门!   请检查格式,不要工作时间!");
+        }
+
         //移除第一行的表头部分
-        sheet.removeRow(sheet.getRow(0));
+        sheet.removeRow(row0);
 
         AtomicReference<List<UserAttendance>> userAttendances = new AtomicReference<>(new ArrayList<>());
 
@@ -386,7 +402,12 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
     }
 
 
-    public void generateExcel() throws Exception {
+    /**
+     *
+     * @return
+     * @throws Exception
+     */
+    public String generateExcel() throws Exception {
         List<String> deptNames = new ArrayList<>();
         deptNames.add(Constants.ARRAY);
 
@@ -470,14 +491,18 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
 
                         while(dateCellValue != null){
                             Average average = dateAverageMap.get(dateCellValue);
-                            userRow.createCell(cellNum).setCellValue(average.getNumberOfOperators());
-
-                            cellNum++;
-                            if(row.getCell(cellNum) != null){
-                                dateCellValue = row.getCell(cellNum).getStringCellValue();
+                            if(average != null){
+                                userRow.createCell(cellNum).setCellValue(average.getNumberOfOperators());
                             }else{
-                                break;
+                                userRow.createCell(cellNum).setCellValue(0);
                             }
+                                cellNum++;
+                                if(row.getCell(cellNum) != null){
+                                    dateCellValue = row.getCell(cellNum).getStringCellValue();
+                                }else{
+                                    break;
+                                }
+
 
                         }
                     }
@@ -488,14 +513,19 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
 
                         while(dateCellValue != null){
                             Average average = dateAverageMap.get(dateCellValue);
-                            userRow.createCell(cellNum).setCellValue(average.getWorkingHours());
-
-                            cellNum++;
-                            if(row.getCell(cellNum) != null){
-                                dateCellValue = row.getCell(cellNum).getStringCellValue();
+                            if(average != null){
+                                userRow.createCell(cellNum).setCellValue(average.getWorkingHours());
                             }else{
-                                break;
+                                userRow.createCell(cellNum).setCellValue(0.0);
                             }
+                                cellNum++;
+                                if(row.getCell(cellNum) != null){
+                                    dateCellValue = row.getCell(cellNum).getStringCellValue();
+                                }else{
+                                    break;
+                                }
+
+
                         }
                     }
                 if(smallRow == 0){
@@ -505,14 +535,19 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
 
                         while(dateCellValue != null){
                             Average average = dateAverageMap.get(dateCellValue);
-                            userRow.createCell(cellNum).setCellValue(average.getAverageWorkingHours());
-
-                            cellNum++;
-                            if(row.getCell(cellNum) != null){
-                                dateCellValue = row.getCell(cellNum).getStringCellValue();
+                            if(average != null) {
+                                userRow.createCell(cellNum).setCellValue(average.getAverageWorkingHours());
                             }else{
-                                break;
+                                userRow.createCell(cellNum).setCellValue(0.0);
                             }
+                                cellNum++;
+                                if(row.getCell(cellNum) != null){
+                                    dateCellValue = row.getCell(cellNum).getStringCellValue();
+                                }else{
+                                    break;
+                                }
+
+
                         }
                     }
                 }
@@ -535,12 +570,18 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
             titleRow.createCell(10).setCellValue("是否旷工");
 //            titleRow.createCell(9).setCellValue("工作时间");
             titleRow.createCell(11).setCellValue("部门");
-            List<UserAttendance> byDeptName = userAttendanceDao.findByDeptNameOrderByManufacturer(deptName);
+            List<UserAttendance> byDeptName = userAttendanceDao.findByDeptNameOrderByManufacturerDesc(deptName);
+
+            byDeptName.sort(Comparator.comparing(u -> u.getUserId().substring(2)));
+
+
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
             for (int i=lastRowNum+1,j=0; j<byDeptName.size(); i++,j++){
                 Row original = sheet.createRow(i);
                 original.createCell(0).setCellValue(byDeptName.get(j).getUserId());
                 original.createCell(1).setCellValue(byDeptName.get(j).getUserName());
-                original.createCell(2).setCellValue(byDeptName.get(j).getAttendanceDate());
+                String format = simpleDateFormat.format(byDeptName.get(j).getAttendanceDate());
+                original.createCell(2).setCellValue(format);
                 original.createCell(3).setCellValue(byDeptName.get(j).getTimeDuan());
                 original.createCell(4).setCellValue(byDeptName.get(j).getSignTime());
                 original.createCell(5).setCellValue(byDeptName.get(j).getSignAddress());
@@ -556,8 +597,7 @@ public class UserAttendanceExcel extends ExcelOperate implements ExcelProcessabl
         }
 
         //下载
-        super.write(workbook,Constants.PATH);
-
+        return super.write(workbook,basePath);
     }
 
 

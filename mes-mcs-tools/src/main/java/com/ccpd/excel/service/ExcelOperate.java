@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
@@ -15,9 +17,13 @@ import java.util.Date;
  * Created by jondai on 2017/11/22.
  * 操作excel文件
  */
+@Service
 public class ExcelOperate {
 
     private static Logger logger  = Logger.getLogger(ExcelOperate.class);
+
+    @Value("${sys.file.file-name}")
+    private String baseFileName;
 
     public ExcelOperate() {}
 
@@ -60,8 +66,9 @@ public class ExcelOperate {
      * @author daipengwei
      * @date 2017/11/23 下午2:57
      */
-    protected void write(Workbook workbook, String path){
+    protected String write(Workbook workbook, String path){
         FileOutputStream fileOutputStream = null;
+        String filePath = "";
 
         if(path.endsWith(".xls") || path.endsWith("xlsx")){
             try {
@@ -74,19 +81,24 @@ public class ExcelOperate {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
             String formatDate = simpleDateFormat.format(new Date());
-            String filePath = "";
+
             if(path.endsWith("/")){
-                filePath = path +Constants.PATH_NAME+"-" + formatDate + ".xlsx" ;
+                filePath = path +baseFileName+"-" + formatDate + ".xlsx" ;
             }else{
-                filePath = path +"/+"+Constants.PATH_NAME+"-" + formatDate + ".xlsx" ;
+                filePath = path +"/+"+baseFileName+"-" + formatDate + ".xlsx" ;
             }
             File file = new File(filePath);
+
+            if(file.exists() || file.isFile()){
+                file.delete();
+            }
 
             try {
                 fileOutputStream = new FileOutputStream(file.getPath());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+
         }
 
         try {
@@ -95,6 +107,9 @@ public class ExcelOperate {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return filePath;
+
     }
 
     /**

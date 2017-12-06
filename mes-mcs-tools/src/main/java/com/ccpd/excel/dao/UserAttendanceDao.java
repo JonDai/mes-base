@@ -18,6 +18,7 @@ public interface UserAttendanceDao extends JpaRepository<UserAttendance, String>
     List<UserAttendance> findByManufacturerAndDeptName(String manufacturer, String deptName);
     List<UserAttendance> findByDeptName( String deptName);
     List<UserAttendance> findByDeptNameOrderByManufacturer( String deptName);
+    List<UserAttendance> findByDeptNameOrderByManufacturerDesc( String deptName);
 
     List<UserAttendance> findByDeptNameOrderByAttendanceDate( String deptName);
 

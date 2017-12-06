@@ -27,7 +27,10 @@ public interface Constants {
     String QA = "QA";
     String SL = "SL";
 
-    String PATH = "/Users/jondai/Documents/excel统计测试/generate/";
-    String PATH_NAME = "厂商考勤管控表";
+
+//    上午上班：00：00——10：00
+//    上午下班：10：01——12：30
+//    下午上班：12：31——15：00
+//    下午下班：15：01——23：59
 
 }

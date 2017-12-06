@@ -1,9 +1,9 @@
 package com.ccpd.app;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Map;
 
 /**
  * Created by jondai on 2017/11/27.
@@ -12,11 +12,11 @@ import java.util.Map;
 @RequestMapping
 public class AppController {
 
-    private String message = "JonDai";
+    private String username = "管理员";
 
     @RequestMapping("/")
-    public String welcome(Map<String, Object> model) {
-        model.put("username", message);
+    public String welcome(ModelMap model) {
+        model.put("username", username);
         return "index";
     }
 

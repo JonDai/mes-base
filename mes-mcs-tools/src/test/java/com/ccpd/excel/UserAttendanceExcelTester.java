@@ -26,7 +26,7 @@ public class UserAttendanceExcelTester {
     String path = "/Users/jondai/Documents/excel统计测试/20171106-1112汇总.xlsx";
     String path1 = "/Users/jondai/Documents/excel统计测试/20171106-1108.xlsx";
     String path2 = "/Users/jondai/Documents/excel统计测试/副本 20171120-1122汇总.xlsx";
-    String path3 = "/Users/jondai/Documents/excel统计测试/汇总1.xlsx";
+    String path3 = "/Users/jondai/Documents/excel统计测试/19-25.xlsx";
 
     @Test
     public void readUserAttendanceFile() throws Exception {

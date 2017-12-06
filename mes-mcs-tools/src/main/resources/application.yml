@@ -3,16 +3,26 @@
     datasource:
       url: jdbc:mysql://127.0.0.1:3306/ccpd
       username: root
-      password: dpw123
+      password: ccpd123
       driver-class-name: com.mysql.jdbc.Driver
     jpa:
-      show-sql: false
+      show-sql: true
       hibernate:
         ddl-auto: update
     thymeleaf:
       cache: false
+    http:
+      multipart:
+        max-file-size: 50MB
+        max-request-size: 10MB
 
 #日志配置
   logging:
     level: debug
+
+
+  sys:
+    file:
+      path: /Users/jondai/Documents/excel统计测试/generate/
+      file-name: 厂商考勤管控表
 

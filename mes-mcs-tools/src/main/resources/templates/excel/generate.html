@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="common/head"></head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+
+    <div th:include="common/nav"></div>
+    <div th:include="common/tree"></div>
+
+
+    <div class="layui-body">
+        <div class="layui-main">
+        <div>
+            <blockquote class="layui-elem-quote">为保障程序正常运行，请使用xlsx格式。
+                并且excel列表格式为：自定义编号	姓名	日期	对应时段	签到时间	签到区域	签退时间	签退区域	迟到时间	早退时间	是否旷工	部门
+            </blockquote>
+
+
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>1.上传待处理的文件</legend>
+            </fieldset>
+
+            <div class="layui-upload">
+                <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+                <button type="button" class="layui-btn" id="test9">开始上传</button>
+            </div>
+
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>2.上传成功后生成统计表</legend>
+            </fieldset>
+
+            <div class="layui-upload">
+                <button type="button" class="layui-btn" id="test10">
+                    生成统计表格
+                </button>
+
+            </div>
+
+
+            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                <legend>3.获取生成本地路径</legend>
+            </fieldset>
+
+            <fieldset class="layui-elem-field">
+                <legend>路径</legend>
+                <div class="layui-field-box" id="filePath">
+
+                </div>
+            </fieldset>
+
+
+        </div>
+        </div>
+    </div>
+
+    <div th:include="common/footer"></div>
+</div>
+<script th:src="@{/layui/layui.js}"></script>
+
+<script>
+
+    layui.use('layer', function(){
+        var $ = layui.jquery //由于layer弹层依赖jQuery，所以可以直接得到
+            ,layer = layui.layer;
+
+        var load;
+        $("#test10").click(function () {
+            load = layer.load(2);
+            $.ajax({
+                type: "GET",
+                url: "/excel/generate",
+                dataType:"json",
+                success: function(data) {
+                    layer.close(load);
+                    if (data) {
+                        debugger
+                        if (data.ok) {
+                            $("#filePath").html(data.path);
+                            layer.msg(data.ok);
+
+                        } else {
+                            layer.msg(data.fail);
+                        }
+                    }
+                }
+            })
+        })
+
+    });
+
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+        var loadIndex;
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#test1'
+            ,url: '/upload/'
+            ,before: function(obj){
+                //预读本地文件示例，不支持ie8
+                obj.preview(function(index, file, result){
+                    $('#demo1').attr('src', result); //图片链接（base64）
+                });
+            }
+            ,done: function(res){
+                //如果上传失败
+                if(res.code > 0){
+                    return layer.msg('上传失败');
+                }
+                //上传成功
+            }
+            ,error: function(){
+                //演示失败状态，并实现重传
+                var demoText = $('#demoText');
+                demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+                demoText.find('.demo-reload').on('click', function(){
+                    uploadInst.upload();
+                });
+            }
+        });
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#test8'
+            ,url: '/file/upload/'
+            ,auto: false
+            ,accept: 'file' //普通文件
+            //,multiple: true
+            ,bindAction: '#test9'
+            ,before: function () {
+                layer.msg("正在读取文件，请稍后...")
+                loadIndex = layer.load(2);
+            }
+            ,done: function(res){
+                layer.close(loadIndex);
+                if(res.ok){
+                    layer.msg(res.ok);
+                }else{
+                    layer.msg(res.fail);
+                }
+
+            }
+        });
+
+        //绑定原始文件域
+        upload.render({
+            elem: '#test20'
+            ,url: '/upload/'
+            ,done: function(res){
+                console.log(res)
+            }
+        });
+
+    });
+
+
+</script>
+</body>
+</html>
